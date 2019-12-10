@@ -34,7 +34,7 @@ for origin in positions:
 			elif cx > ox and cy < oy:	# top right
 				d = math.degrees(math.atan(abs(cx-ox)/abs(cy-oy)))
 			elif cx < ox and cy < oy:	# top left
-				d = 270+math.degrees(math.atan(abs(cx-ox)/abs(cy-oy)))
+				d = 360-math.degrees(math.atan(abs(cx-ox)/abs(cy-oy)))
 			else: # bottom left
 				d = 180+math.degrees(math.atan(abs(cx-ox)/abs(cy-oy)))
 		spotted.append(comet)
@@ -45,7 +45,7 @@ for origin in positions:
 		degrees_comet = degrees
 		best_position = origin
 
-print("best position", best_position)
+# print("best position", best_position)
 
 # we now know the best position, create
 # and ordered list of comets to be destroyed
@@ -55,17 +55,17 @@ def getDegrees(item):
 def getDistance(item):
 	return item[2]
 
-distances = [math.sqrt((best_position[0] + i[0]) + (best_position[1] + i[1])) for i in list_comet]
+distances = [math.sqrt(math.pow(best_position[0] - i[0], 2) + math.pow(best_position[1] - i[1], 2)) for i in list_comet]
 # print(distances)
 destroyed = [0] * len(list_comet)
-comet_list = sorted(sorted(zip(degrees_comet, list_comet, distances, destroyed), key=getDistance, reverse=True), key=getDegrees)
+comet_list = sorted(sorted(zip(degrees_comet, list_comet, distances, destroyed), key=getDistance), key=getDegrees)
 comet_list = [list(i) for i in comet_list]
 
 destroyed_degrees = []
 destroyed_counter = 0
 index = 0
 last_destroyed = []
-while(destroyed_counter < 210):
+while(destroyed_counter < 200):
 	if index >= len(comet_list):
 		index = 0
 		destroyed_degrees = []
@@ -76,8 +76,8 @@ while(destroyed_counter < 210):
 		destroyed_degrees.append(c[0])
 		destroyed_counter += 1
 		last_destroyed = c
-		print("destroyed:", destroyed_counter, c[1])
+		# print("destroyed:", destroyed_counter, c[1])
 	index += 1
 
-print("last_destroyed:", last_destroyed)
-# print(comet_list)
+print(last_destroyed[1][0]*100+last_destroyed[1][1])
+# [print(i) for i in comet_list]
