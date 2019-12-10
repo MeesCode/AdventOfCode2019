@@ -2,7 +2,7 @@
 import math
 
 # get data
-data = [line.rstrip('\n') for line in open("data10-1.txt")]
+data = [line.rstrip('\n') for line in open("data.txt")]
 
 # get a list of positions
 positions = []
