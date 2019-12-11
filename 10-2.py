@@ -1,4 +1,3 @@
-import os
 import math
 import time
 
@@ -36,14 +35,13 @@ for origin in pos:
 # part two
 i, cd, phi = 0, 0, -1
 last = []
-while(cd < 200):
+while(cd < 450):
 	if i >= len(asteroids): i = 0
 	c = asteroids[i]
 	if c[3] == 0 and c[0] != phi:
 		l = list(data[c[1][1]])
 		l[c[1][0]] = '.'
 		data[c[1][1]] = ''.join(l)
-		os.system('clear') 
 		[print(i) for i in data]
 		print()
 		time.sleep(0.020)

@@ -53,7 +53,7 @@ class Tile:
 			self.color = color
 			self.painted = True
 
-x, y, direction, tiles = 0, 0, 0, [Tile((0, 0), 0)]
+x, y, direction, tiles = 0, 0, 0, [Tile((0, 0), 1)]
 
 def getTileAtPosition(cord):
 	global tiles
@@ -78,4 +78,18 @@ data = [int(i) for i in [line.split(',') for line in open('data.txt')][0]]
 data.extend([0]*1000)
 Machine(data).run()
 
-print(len(list(filter(lambda x: x.painted, tiles))))
+minx, miny, maxx, maxy = 0, 0, 0, 0
+for i in tiles:
+	minx = min(i.cord[0], minx)
+	maxx = max(i.cord[0], maxx)
+	miny = min(i.cord[1]-1, miny)
+	maxy = max(i.cord[1], maxy)
+	i.cord = list(i.cord)
+
+pic = [([' ']*(maxx - minx)) for i in range(maxy - miny)]
+for i in tiles:
+	if i.color == 1:
+		pic[i.cord[1]][i.cord[0]] = '█'
+		[print("".join(p)) for p in pic]
+		print()
+		time.sleep(0.05)

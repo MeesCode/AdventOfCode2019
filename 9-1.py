@@ -8,12 +8,12 @@ class Machine:
 
   def parse_instruction(self, cmd):
     cmd = '%0*d' % (5, cmd)
-    opcode, p = int(cmd[-2:]), []
+    p = []
     for i, c in enumerate(cmd[:3][::-1]):
       if c == '0': pointer = self.data[self.index+i+1]
       elif c == '1': pointer = self.index+i+1
       else: pointer = self.relative_base+self.data[self.index+i+1]
-      if len(data) < pointer: data.extend([0] * (pointer-len(data)+1))
+      if c in ['1', '2'] and len(data) <= pointer: data.extend([0] * (pointer-len(data)+1))
       p.append(pointer)
     return int(cmd[-2:]), p
     
