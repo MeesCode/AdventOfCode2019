@@ -1,4 +1,4 @@
-from functools import reduce
+import numpy as np
 
 data = [line.rstrip('\n') for line in open("data.txt")]
 data = [i[1:len(i)-1].split(',') for i in data]
@@ -40,24 +40,6 @@ def allPeriodsFound(moons):
     for i in moons:
         if not i.periodsFound(): return False
     return True
-
-def lcm(a, b):
-    if a > b:
-        greater = a
-    else:
-        greater = b
-
-    while True:
-        if greater % a == 0 and greater % b == 0:
-            lcm = greater
-            break
-        greater += 1
-
-    return lcm
-
-def get_lcm_for(your_list):
-    return reduce(lambda x, y: lcm(x, y), your_list)
-
 periodx, periody, periodz = 0,0,0
 
 for c in range(9999999999999999):
@@ -103,7 +85,7 @@ l = [periodx, periody, periodz]
 
 print(l)
 
-print(get_lcm_for(l))
+print(np.lcm.reduce(l))
 
 # result = 0
 # for i in moons:
