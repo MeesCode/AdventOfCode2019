@@ -1,93 +1,43 @@
 import numpy as np
-
-data = [line.rstrip('\n') for line in open("data.txt")]
-data = [i[1:len(i)-1].split(',') for i in data]
-data = [[int(i.split('=')[1]) for i in j] for j in data]
-
-# print(data)
+import itertools
 
 class Moon:
     vx, vy, vz = 0, 0, 0
-    px, py, pz = 0, 0, 0
     def __init__(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
-        self.ox = x
-        self.oy = y
-        self.oz = z
+        self.x, self.ox = x, x
+        self.y, self.oy = y, y
+        self.z, self.oz = z, z
 
-    def periodsFound(self):
-        return 0 not in [self.px, self.py, self.pz]
+    def energy(self):
+        return sum([abs(i) for i in [self.x + self.y + self.z]]) * sum([abs(i) for i in [self.vx + self.vy + self.vz]])
 
-    def pot(self):
-        return abs(self.x) + abs(self.y) + abs(self.z)
+m = [Moon(p[0], p[1], p[2]) for p in 
+[[int(i.split('=')[1]) for i in j] for j in 
+[i[1:len(i)-1].split(',') for i in 
+[line.rstrip('\n') for line in 
+open("data.txt")]]]]
 
-    def kin(self):
-        return abs(self.vx) + abs(self.vy) + abs(self.vz)
-
-    def __str__(self):
-        return str(self.x) + ',' + str(self.y) + ',' + str(self.z) + ' - ' + str(self.vx) + ',' + str(self.vy) + ',' + str(self.vz) + ' - ' + str(self.px) + ',' + str(self.py) + ',' + str(self.pz) + ';'
-
-moons = [Moon(p[0], p[1], p[2]) for p in data]
-
-def printMoons(moons):
-    for i in moons:
-        print(i)
-    print()
-
-def allPeriodsFound(moons):
-    for i in moons:
-        if not i.periodsFound(): return False
-    return True
-periodx, periody, periodz = 0,0,0
-
-for c in range(9999999999999999):
+px, py, pz = 0,0,0
+for c in itertools.count():
     for (x, y) in [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]:
-        a = moons[x]
-        b = moons[y]
+        a, b = m[x], m[y]
         if a == b: continue
-        if a.x > b.x: 
-            a.vx -= 1
-            b.vx += 1
-        elif a.x < b.x: 
-            a.vx += 1
-            b.vx -= 1
+        if a.x > b.x: a.vx, b.vx = a.vx-1, b.vx+1
+        elif a.x < b.x: a.vx, b.vx = a.vx+1, b.vx-1
+        if a.y > b.y: a.vy, b.vy = a.vy-1, b.vy+1
+        elif a.y < b.y: a.vy, b.vy = a.vy+1, b.vy-1
+        if a.z > b.z: a.vz, b.vz = a.vz-1, b.vz+1
+        elif a.z < b.z: a.vz, b.vz = a.vz+1, b.vz-1
 
-        if a.y > b.y: 
-            a.vy -= 1
-            b.vy += 1
-        elif a.y < b.y: 
-            a.vy += 1
-            b.vy -= 1
-
-        if a.z > b.z: 
-            a.vz -= 1
-            b.vz += 1
-        elif a.z < b.z: 
-            a.vz += 1
-            b.vz -= 1
-
-    for i in moons:
+    for i in m:
         i.x += i.vx
         i.y += i.vy
         i.z += i.vz
 
-    if periodx == 0 and moons[0].x == moons[0].ox and moons[1].x == moons[1].ox and moons[2].x == moons[2].ox and moons[3].x == moons[3].ox : periodx = c + 2
-    if periody == 0 and moons[0].y == moons[0].oy and moons[1].y == moons[1].oy and moons[2].y == moons[2].oy and moons[3].y == moons[3].oy : periody = c + 2
-    if periodz == 0 and moons[0].z == moons[0].oz and moons[1].z == moons[1].oz and moons[2].z == moons[2].oz and moons[3].z == moons[3].oz : periodz = c + 2
+    if px == 0 and m[0].x == m[0].ox and m[1].x == m[1].ox and m[2].x == m[2].ox and m[3].x == m[3].ox : px = c + 2
+    if py == 0 and m[0].y == m[0].oy and m[1].y == m[1].oy and m[2].y == m[2].oy and m[3].y == m[3].oy : py = c + 2
+    if pz == 0 and m[0].z == m[0].oz and m[1].z == m[1].oz and m[2].z == m[2].oz and m[3].z == m[3].oz : pz = c + 2
+    if 0 not in [px, py, pz]: break
 
-    if 0 not in [periodx, periody, periodz]:
-        break
-
-printMoons(moons)
-l = [periodx, periody, periodz]
-
-print(l)
-
-print(np.lcm.reduce(l))
-
-# result = 0
-# for i in moons:
-#     result += i.pot() * i.kin()
-# print("energy", result)
+print("energy", sum([i.energy() for i in m])) # part 1
+print("period", np.lcm.reduce([px, py, pz])) # part 2
